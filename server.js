@@ -1,11 +1,12 @@
-const express = require("express");
+const express = require('express');
+const app = express(); 
 const mysql = require("mysql2");
 const crypto = require("crypto");
 
-const app = express();
+
 
 const PORT = 3000;
-
+require('dotenv').config()
 
 // CONNEXION A MYSQL
 
@@ -39,8 +40,8 @@ db.connect(function(error) {
 // MIDDLEWARE
 
 app.use(express.json());
+app.use(express.static('public'));
 
-app.use(express.static(__dirname));
 
 
 // SESSIONS
@@ -434,10 +435,7 @@ app.delete("/api/admin/supprimer", function(req, res) {
 
 // LANCER LE SERVEUR
 
-app.listen(PORT, function() {
-
-    console.log(
-        "Serveur lancé sur http://localhost:" + PORT
-    );
-
+app.listen(PORT, () => { 
+  let monIp = require("ip").address(); 
+  console.log(`Server running on http://${monIp}:3000`); 
 });
