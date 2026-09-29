@@ -1,24 +1,50 @@
 <!DOCTYPE html>
-<html>
+<html lang="fr">
 <head>
-    <title>Mon site</title>
+    <meta charset="UTF-8">
+    <title>Formulaire</title>
     <link rel="stylesheet" href="style.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 
 <body>
 
-    <section>
-        <h1>Bienvenue</h1>
+    <h1>Formulaire</h1>
+    <nav>
+        <button onclick="page('connexion')">Connexion</button>
+        <button onclick="page('inscription')">Inscription</button>
+    </nav>
 
-        <div class="register-link">
-            <a href="inscription.html">Creer un compte</a>
-        </div>
-
-        <div class="register-link">
-            <a href="connexion.html">Se connecter</a>
-        </div>
+    <section id="inscription" class="page">
+        <h2>Inscription</h2>
+        <input id="nom" placeholder="Nom d'utilisateur">
+        <input id="password" type="password" placeholder="Mot de passe">
+        <button onclick="inscription()">S'inscrire</button>
+        <p id="messageInscription"></p>
     </section>
 
+    <section id="connexion" class="page">
+        <h2>Connexion</h2>
+        <input id="nomConnexion" type="email" placeholder="Nom d'utilisateur">
+        <input id="passwordConnexion" type="password" placeholder="Mot de passe">
+        <button onclick="connexion()">Se connecter</button>
+        <p id="messageConnexion"></p>
+    </section>
+
+    <section id="profil" class="page">
+        <h2>Mon profil</h2>
+        <p>
+            Nom : <span id="profilNom"></span>
+        </p>
+        <p>
+            Email : <span id="profilEmail"></span>
+        </p>
+        <button onclick="deconnexion()">
+            Déconnexion
+        </button>
+        <button onclick="supprimerCompte()">
+            Supprimer mon compte
+        </button>
+    </section>
+    <script src="server.js"></script>
 </body>
 </html>

@@ -1,119 +1,30 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-
 body {
-    background-color: #E5E4E2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-section {
-    background-color: #4B0082;
-    padding: 30px;
-    width : 420px;
-    border-radius: 20px;
-}
-
-section h1 {
-    font-size: 30px;
+    font-family: Arial;
     text-align: center;
-    color: #E5E4E2;
-    margin-bottom: 20px;
+    margin: 40px;
 }
 
-.input-box {
-    width: 100%;
-    position: relative;
-    margin-bottom: 25px;
-}
-
-.input-box input {
-    width: 100%;
-    padding: 15px;
-    border-radius: 25px;
-    outline: none;
-    background-color: transparent;
-    border : 2px solid rgba(229,228,226,0.2);
-    color : #E5E4E2;
-    padding-right: 40px; 
-}
-
-.input-box input::placeholder {
-    color: #E5E4E2;
-}
-
-.input-box i {
-    position: absolute;
-    transform: translateY(-50%);
-    right: 20px;
-    top: 50%;
-    color: #E5E4E2;
-}
-
-.remember-forgot {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 14px;
-    color: #E5E4E2;
-    margin-bottom: 25px;
-}
-
-.remember-forgot a, .register-link a { 
-    margin-right: 5px;
-}
-
-.remember-forgot a:hover, .register-link a {
-    text-decoration: underline;
-}
-
-.login-btn {
-    width: 100%;
-    padding: 15px;
-    border-radius: 25px;
-    outline: none;
-    border: 0;
-    font-weight: bold;
-    cursor: pointer;
-    background-color: #E5E4E2;
-    color: #4B0082;
-    border: 2px solid transparent;
-    transition: 0.5s;
-}
-
-.login-btn:hover {
-    background-color: transparent;
-    border: 2px solid rgba(229,228,226,0.2);
-    border-color: #E5E4E2;
-    color: #E5E4E2;
-}
-
-.register-link {
-    text-align: center;
-    margin-top: 25px;
-    color: #E5E4E2;
-    font-size: 14px;
-}
-
-input {
-    padding: 8px;
+nav {
+    margin-bottom: 30px;
 }
 
 button {
-    padding: 8px;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
 }
 
-a {
-    text-decoration: none;
-    color: #E5E4E2;
+input {
+    display: block;
+    width: 250px;
+    padding: 10px;
+    margin: 10px auto;
 }
 
-.form-container {
-    position: centered;
-    float: left;
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block;
 }
