@@ -1,7 +1,6 @@
 {
   "name": "projet1",
   "version": "1.0.0",
-  "description": "",
   "main": "admin.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -16,5 +15,11 @@
   "bugs": {
     "url": "https://github.com/gGuille111/projet_tp1/issues"
   },
-  "homepage": "https://github.com/gGuille111/projet_tp1#readme"
+  "homepage": "https://github.com/gGuille111/projet_tp1#readme",
+  "keywords": [],
+  "description": "",
+  "dependencies": {
+    "express": "^5.2.1",
+    "mysql2": "^3.24.4"
+  }
 }

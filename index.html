@@ -1,50 +1,128 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
-    <title>Formulaire</title>
+    <title>Projet</title>
+
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <h1>Formulaire</h1>
+    <h1>Mon projet</h1>
+
     <nav>
+        <button onclick="page('accueil')">Accueil</button>
         <button onclick="page('connexion')">Connexion</button>
         <button onclick="page('inscription')">Inscription</button>
     </nav>
 
-    <section id="inscription" class="page">
-        <h2>Inscription</h2>
-        <input id="nom" placeholder="Nom d'utilisateur">
-        <input id="password" type="password" placeholder="Mot de passe">
-        <button onclick="inscription()">S'inscrire</button>
-        <p id="messageInscription"></p>
+
+    <!-- ACCUEIL -->
+
+    <section id="accueil" class="page active">
+
+        <h2>Bienvenue</h2>
+
+        <p>Bienvenue sur mon projet.</p>
+
     </section>
+
+
+    <!-- INSCRIPTION -->
+
+    <section id="inscription" class="page">
+
+        <h2>Inscription</h2>
+
+        <input
+            id="nom"
+            type="text"
+            placeholder="Nom d'utilisateur"
+        >
+
+        <input
+            id="password"
+            type="password"
+            placeholder="Mot de passe"
+        >
+
+        <button onclick="inscription()">
+            S'inscrire
+        </button>
+
+        <p id="messageInscription"></p>
+
+    </section>
+
+
+    <!-- CONNEXION -->
 
     <section id="connexion" class="page">
+
         <h2>Connexion</h2>
-        <input id="nomConnexion" type="email" placeholder="Nom d'utilisateur">
-        <input id="passwordConnexion" type="password" placeholder="Mot de passe">
-        <button onclick="connexion()">Se connecter</button>
+
+        <input
+            id="nomConnexion"
+            type="text"
+            placeholder="Nom d'utilisateur"
+        >
+
+        <input
+            id="passwordConnexion"
+            type="password"
+            placeholder="Mot de passe"
+        >
+
+        <button onclick="connexion()">
+            Se connecter
+        </button>
+
         <p id="messageConnexion"></p>
+
     </section>
 
+
+    <!-- PROFIL -->
+
     <section id="profil" class="page">
+
         <h2>Mon profil</h2>
+
         <p>
-            Nom : <span id="profilNom"></span>
+            Nom d'utilisateur :
+            <span id="profilNom"></span>
         </p>
-        <p>
-            Email : <span id="profilEmail"></span>
-        </p>
+
         <button onclick="deconnexion()">
             Déconnexion
         </button>
+
         <button onclick="supprimerCompte()">
             Supprimer mon compte
         </button>
+
     </section>
-    <script src="server.js"></script>
+
+
+    <!-- ADMIN -->
+
+    <section id="admin" class="page">
+
+        <h2>Administration</h2>
+
+        <div id="listeUtilisateurs"></div>
+
+        <button onclick="page('profil')">
+            Retour au profil
+        </button>
+
+    </section>
+
+
+    <script src="script.js"></script>
+
 </body>
+
 </html>
