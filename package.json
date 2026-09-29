@@ -8,5 +8,13 @@
     "start": "node server.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gGuille111/projet_tp1.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gGuille111/projet_tp1/issues"
+  },
+  "homepage": "https://github.com/gGuille111/projet_tp1#readme"
 }

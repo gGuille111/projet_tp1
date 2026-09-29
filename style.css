@@ -5,7 +5,7 @@
 }
 
 body {
-    background-color: #FFF5F5;
+    background-color: #E5E4E2;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -13,7 +13,7 @@ body {
 }
 
 section {
-    background-color: #F7D6D0;
+    background-color: #4B0082;
     padding: 30px;
     width : 420px;
     border-radius: 20px;
@@ -22,7 +22,7 @@ section {
 section h1 {
     font-size: 30px;
     text-align: center;
-    color: #4A4A4A;
+    color: #E5E4E2;
     margin-bottom: 20px;
 }
 
@@ -38,13 +38,13 @@ section h1 {
     border-radius: 25px;
     outline: none;
     background-color: transparent;
-    border : 2px solid rgba(255,255,255,0.2);
-    color : #4A4A4A;
+    border : 2px solid rgba(229,228,226,0.2);
+    color : #E5E4E2;
     padding-right: 40px; 
 }
 
 .input-box input::placeholder {
-    color: 4A4A4A;
+    color: #E5E4E2;
 }
 
 .input-box i {
@@ -52,7 +52,7 @@ section h1 {
     transform: translateY(-50%);
     right: 20px;
     top: 50%;
-    color: #4A4A4A;
+    color: #E5E4E2;
 }
 
 .remember-forgot {
@@ -60,7 +60,7 @@ section h1 {
     justify-content: space-between;
     align-items: center;
     font-size: 14px;
-    color: #4A4A4A;
+    color: #E5E4E2;
     margin-bottom: 25px;
 }
 
@@ -80,20 +80,23 @@ section h1 {
     border: 0;
     font-weight: bold;
     cursor: pointer;
+    background-color: #E5E4E2;
+    color: #4B0082;
     border: 2px solid transparent;
     transition: 0.5s;
 }
 
 .login-btn:hover {
     background-color: transparent;
-    border: 2px solid rgba(255,255,255,0.2);
-    border-color: #4A4A4A;
+    border: 2px solid rgba(229,228,226,0.2);
+    border-color: #E5E4E2;
+    color: #E5E4E2;
 }
 
 .register-link {
     text-align: center;
     margin-top: 25px;
-    color: #4A4A4A;
+    color: #E5E4E2;
     font-size: 14px;
 }
 
@@ -107,4 +110,10 @@ button {
 
 a {
     text-decoration: none;
+    color: #E5E4E2;
+}
+
+.form-container {
+    position: centered;
+    float: left;
 }
