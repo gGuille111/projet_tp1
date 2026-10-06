@@ -22,13 +22,13 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 app.post('/register', (req, res) => {
-if (req.body.login === undefined || req.body.password === undefined) {
+if (req.body.username === undefined || req.body.password === undefined) {
   res.json({ message: 'Aucune donnée reçue' });
   return;
 }
 
-if (req.body.login.length < 4) {
-  res.json({ message: 'Le login doit contenir au moins 4 caractères' });
+if (req.body.username.length < 4) {
+  res.json({ message: 'Le nom d\'utilisateur doit contenir au moins 4 caractères' });
   return;
 }
 
@@ -45,19 +45,19 @@ bcrypt.hash(req.body.password, 10, (err, hash) => {
   }
 
 connection.query(
-  'INSERT INTO User (login, password) VALUES (?, ?)',
-  [req.body.login, hash],
+  'INSERT INTO users (username, password) VALUES (?, ?)',
+  [req.body.username, hash],
   (err, results) => {
     if (err) {
       if (err.code === 'ER_DUP_ENTRY') {
-        res.json({ message: 'Login déjà utilisé' });
+        res.json({ message: 'Nom d\'utilisateur déjà utilisé' });
         return;
       }
     console.error('Erreur lors de l\'inscription :', err);
     res.status(500).json({ message: 'Erreur serveur' });
       return;
     }
-    console.log('Inscription réussie pour :', req.body.login);
+    console.log('Inscription réussie pour :', req.body.username);
     res.json({ message: 'Inscription réussie' });
   }
   );
@@ -65,14 +65,14 @@ connection.query(
 });
 
 app.post('/login', (req, res) => {
-if (req.body.login === undefined || req.body.password === undefined) {
+if (req.body.username === undefined || req.body.password === undefined) {
   res.json({ message: 'Aucune donnée reçue' });
   return;
  }
 
   connection.query(
-  'SELECT * FROM User WHERE login = ?',
-  [req.body.login],
+  'SELECT * FROM users WHERE username = ?',
+  [req.body.username],
   (err, results) => {
     if (err) {
       console.error('Erreur lors de la connexion :', err);
@@ -90,7 +90,7 @@ if (req.body.login === undefined || req.body.password === undefined) {
         return;
       }
       if (resultat) {
-        console.log('Connexion réussie pour :', results[0].login);
+        console.log('Connexion réussie pour :', results[0].username);
         res.json({ message: 'Connexion réussie' });
         return;
       }
