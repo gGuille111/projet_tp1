@@ -1,441 +1,122 @@
 const express = require('express');
-const app = express(); 
-const mysql = require("mysql2");
-const crypto = require("crypto");
+const app = express();
+const mysql = require('mysql2');
+require('dotenv').config();
 
-
-
-const PORT = 3000;
-require('dotenv').config()
-
-// CONNEXION A MYSQL
-
-const db = mysql.createConnection({
-
-    host: "localhost",
-
-    user: "root",
-
-    password: "debiantp1",
-
-    database: "projet_auth"
-
+const connection = mysql.createConnection({
+  host: process.env.HostBDD,
+  user: process.env.LoginBDD,
+  password: process.env.PasswordBDD,
+  database: 'projet_auth'
 });
 
+connection.connect((err) => {
+  if (err) {
+    console.error('Erreur de connexion à la base de données :', err);
+    return;
+  }
 
-db.connect(function(error) {
-
-    if (error) {
-
-        console.log("Erreur MySQL :", error);
-
-        return;
-    }
-
-    console.log("Connecté à MySQL");
-
+  console.log('Connecté à la base de données MySQL.');
 });
-
-
-// MIDDLEWARE
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static(__dirname));
 
+app.post('/register', (req, res) => {
+  if (req.body.login === undefined || req.body.password === undefined) {
+    res.json({ message: 'Aucune donnée reçue' });
+    return;
+  }
 
+  if (req.body.login.length < 4) {
+    res.json({ message: 'Le login doit contenir au moins 4 caractères' });
+    return;
+  }
 
-// SESSIONS
+  if (req.body.login.length > 20) {
+    res.json({ message: 'Le login ne doit pas dépasser 20 caractères' });
+    return;
+  }
 
-let sessions = {};
+  if (req.body.password.length < 8) {
+    res.json({ message: 'Le mot de passe doit contenir au moins 8 caractères' });
+    return;
+  }
 
+  if (req.body.password.length > 30) {
+    res.json({ message: 'Le mot de passe ne doit pas dépasser 30 caractères' });
+    return;
+  }
 
-// HASH DU MOT DE PASSE
-
-function hashPassword(password) {
-
-    return crypto
-        .createHash("sha256")
-        .update(password)
-        .digest("hex");
-
-}
-
-
-// RECUPERER L'UTILISATEUR CONNECTE
-
-function getUser(req) {
-
-    let session =
-        req.headers.cookie;
-
-    if (!session) {
-        return null;
+  bcrypt.hash(req.body.password, 10, (err, hash) => {
+    if (err) {
+      console.error('Erreur lors du hash du mot de passe :', err);
+      res.status(500).json({ message: 'Erreur serveur' });
+      return;
     }
 
+    connection.query(
+      'INSERT INTO User (login, password) VALUES (?, ?)',
+      [req.body.login, hash],
+      (err, results) => {
+        if (err) {
+          if (err.code === 'ER_DUP_ENTRY') {
+            res.json({ message: 'Login déjà utilisé' });
+            return;
+          }
 
-    let sessionId =
-        session
-        .split("=")[1];
-
-
-    return sessions[sessionId];
-
-}
-
-
-// INSCRIPTION
-
-app.post("/api/inscription", function(req, res) {
-
-    let username =
-        req.body.username;
-
-    let password =
-        req.body.password;
-
-
-    if (!username || !password) {
-
-        return res.status(400).json({
-            message: "Tous les champs sont obligatoires."
-        });
-
-    }
-
-
-    let passwordHash =
-        hashPassword(password);
-
-
-    let sql = `
-        INSERT INTO users
-        (username, password)
-        VALUES (?, ?)
-    `;
-
-
-    db.query(
-        sql,
-        [username, passwordHash],
-        function(error) {
-
-            if (error) {
-
-                if (error.code === "ER_DUP_ENTRY") {
-
-                    return res.status(400).json({
-                        message:
-                            "Ce nom d'utilisateur existe déjà."
-                    });
-
-                }
-
-
-                console.log(error);
-
-                return res.status(500).json({
-                    message: "Erreur serveur."
-                });
-
-            }
-
-
-            res.json({
-                message:
-                    "Compte créé avec succès."
-            });
-
+          console.error('Erreur lors de l\'inscription :', err);
+          res.status(500).json({ message: 'Erreur serveur' });
+          return;
         }
-    );
 
+        console.log('Inscription réussie pour :', req.body.login);
+        res.json({ message: 'Inscription réussie' });
+      }
+    );
+  });
 });
 
+app.post('/login', (req, res) => {
+  if (req.body.login === undefined || req.body.password === undefined) {
+    res.json({ message: 'Aucune donnée reçue' });
+    return;
+  }
 
-// CONNEXION
+  connection.query(
+    'SELECT * FROM User WHERE login = ?',
+    [req.body.login],
+    (err, results) => {
+      if (err) {
+        console.error('Erreur lors de la connexion :', err);
+        res.status(500).json({ message: 'Erreur serveur' });
+        return;
+      }
 
-app.post("/api/connexion", function(req, res) {
+      if (results.length === 0) {
+        res.json({ message: 'Identifiants invalides' });
+        return;
+      }
 
-    let username =
-        req.body.username;
-
-    let password =
-        req.body.password;
-
-
-    let passwordHash =
-        hashPassword(password);
-
-
-    let sql = `
-        SELECT id, username, role
-        FROM users
-        WHERE username = ?
-        AND password = ?
-    `;
-
-
-    db.query(
-        sql,
-        [username, passwordHash],
-        function(error, results) {
-
-            if (error) {
-
-                console.log(error);
-
-                return res.status(500).json({
-                    message: "Erreur serveur."
-                });
-
-            }
-
-
-            if (results.length === 0) {
-
-                return res.status(401).json({
-                    message:
-                        "Nom d'utilisateur ou mot de passe incorrect."
-                });
-
-            }
-
-
-            let user =
-                results[0];
-
-
-            let sessionId =
-                crypto
-                .randomBytes(20)
-                .toString("hex");
-
-
-            sessions[sessionId] =
-                user;
-
-
-            res.setHeader(
-                "Set-Cookie",
-                "sessionId=" +
-                sessionId +
-                "; HttpOnly; Path=/"
-            );
-
-
-            res.json({
-
-                message:
-                    "Connexion réussie.",
-
-                user: user
-
-            });
-
+      bcrypt.compare(req.body.password, results[0].password, (err, resultat) => {
+        if (err) {
+          console.error('Erreur lors de la vérification du mot de passe :', err);
+          res.status(500).json({ message: 'Erreur serveur' });
+          return;
         }
-    );
 
-});
-
-
-// DECONNEXION
-
-app.post("/api/deconnexion", function(req, res) {
-
-    let session =
-        req.headers.cookie;
-
-
-    if (session) {
-
-        let sessionId =
-            session.split("=")[1];
-
-        delete sessions[sessionId];
-
-    }
-
-
-    res.setHeader(
-        "Set-Cookie",
-        "sessionId=; Max-Age=0; Path=/"
-    );
-
-
-    res.json({
-        message: "Déconnexion réussie."
-    });
-
-});
-
-
-// SUPPRIMER SON COMPTE
-
-app.delete("/api/supprimer", function(req, res) {
-
-    let user =
-        getUser(req);
-
-
-    if (!user) {
-
-        return res.status(401).json({
-            message: "Vous n'êtes pas connecté."
-        });
-
-    }
-
-
-    db.query(
-        "DELETE FROM users WHERE id = ?",
-        [user.id],
-        function(error) {
-
-            if (error) {
-
-                console.log(error);
-
-                return res.status(500).json({
-                    message: "Erreur serveur."
-                });
-
-            }
-
-
-            let sessionId =
-                req.headers.cookie.split("=")[1];
-
-
-            delete sessions[sessionId];
-
-
-            res.setHeader(
-                "Set-Cookie",
-                "sessionId=; Max-Age=0; Path=/"
-            );
-
-
-            res.json({
-                message:
-                    "Compte supprimé."
-            });
-
+        if (resultat) {
+          console.log('Connexion réussie pour :', results[0].login);
+          res.json({ message: 'Connexion réussie' });
+          return;
         }
-    );
 
+        res.json({ message: 'Identifiants invalides' });
+      });
+    }
+  );
 });
 
-
-// ADMIN : LISTE DES UTILISATEURS
-
-app.get("/api/admin", function(req, res) {
-
-    let user =
-        getUser(req);
-
-
-    if (!user) {
-
-        return res.status(401).json({
-            message: "Vous devez être connecté."
-        });
-
-    }
-
-
-    if (user.role !== "admin") {
-
-        return res.status(403).json({
-            message: "Accès refusé."
-        });
-
-    }
-
-
-    db.query(
-        "SELECT id, username, role FROM users",
-        function(error, results) {
-
-            if (error) {
-
-                console.log(error);
-
-                return res.status(500).json({
-                    message: "Erreur serveur."
-                });
-
-            }
-
-
-            res.json({
-                users: results
-            });
-
-        }
-    );
-
-});
-
-
-// ADMIN : SUPPRIMER UN UTILISATEUR
-
-app.delete("/api/admin/supprimer", function(req, res) {
-
-    let admin =
-        getUser(req);
-
-
-    if (!admin) {
-
-        return res.status(401).json({
-            message: "Vous devez être connecté."
-        });
-
-    }
-
-
-    if (admin.role !== "admin") {
-
-        return res.status(403).json({
-            message: "Accès refusé."
-        });
-
-    }
-
-
-    let id =
-        req.body.id;
-
-
-    db.query(
-        "DELETE FROM users WHERE id = ?",
-        [id],
-        function(error) {
-
-            if (error) {
-
-                console.log(error);
-
-                return res.status(500).json({
-                    message: "Erreur serveur."
-                });
-
-            }
-
-
-            res.json({
-                message:
-                    "Utilisateur supprimé."
-            });
-
-        }
-    );
-
-});
-
-
-// LANCER LE SERVEUR
-
-app.listen(PORT, () => { 
-  let monIp = require("ip").address(); 
-  console.log(`Server running on http://${monIp}:3000`); 
+app.listen(2000, () => {
+  console.log('Serveur lancé sur le port 2000');
 });

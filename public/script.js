@@ -1,9 +1,6 @@
 let utilisateur = null;
 
-
-// CHANGER DE PAGE
 function page(nom) {
-
     document.querySelectorAll(".page").forEach(function(element) {
         element.classList.remove("active");
     });
@@ -11,10 +8,7 @@ function page(nom) {
     document.getElementById(nom).classList.add("active");
 }
 
-
-// INSCRIPTION
 async function inscription() {
-
     let username = document.getElementById("nom").value;
     let password = document.getElementById("password").value;
 
@@ -25,16 +19,13 @@ async function inscription() {
     }
 
     try {
-
-        let reponse = await fetch("/api/inscription", {
+        let reponse = await fetch("/register", {
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json"
             },
-
             body: JSON.stringify({
-                username: username,
+                login: username,
                 password: password
             })
         });
@@ -45,7 +36,6 @@ async function inscription() {
             resultat.message;
 
         if (reponse.ok) {
-
             document.getElementById("nom").value = "";
             document.getElementById("password").value = "";
 
@@ -53,42 +43,29 @@ async function inscription() {
         }
 
     } catch (erreur) {
-
         document.getElementById("messageInscription").textContent =
             "Impossible de contacter le serveur.";
     }
 }
 
-
-// CONNEXION
 async function connexion() {
-
-    let username =
-        document.getElementById("nomConnexion").value;
-
-    let password =
-        document.getElementById("passwordConnexion").value;
+    let username = document.getElementById("nomConnexion").value;
+    let password = document.getElementById("passwordConnexion").value;
 
     if (username === "" || password === "") {
-
         document.getElementById("messageConnexion").textContent =
             "Remplis tous les champs.";
-
         return;
     }
 
     try {
-
-        let reponse = await fetch("/api/connexion", {
-
+        let reponse = await fetch("/login", {
             method: "POST",
-
             headers: {
                 "Content-Type": "application/json"
             },
-
             body: JSON.stringify({
-                username: username,
+                login: username,
                 password: password
             })
         });
@@ -98,174 +75,19 @@ async function connexion() {
         document.getElementById("messageConnexion").textContent =
             resultat.message;
 
-        if (reponse.ok) {
-
-            utilisateur = resultat.user;
-
-            afficherProfil();
-
+        if (reponse.ok && resultat.message === "Connexion réussie") {
+            utilisateur = username;
             page("profil");
+            document.getElementById("profilNom").textContent = username;
         }
 
     } catch (erreur) {
-
         document.getElementById("messageConnexion").textContent =
             "Impossible de contacter le serveur.";
     }
 }
 
-
-// AFFICHER LE PROFIL
-function afficherProfil() {
-
-    document.getElementById("profilNom").textContent =
-        utilisateur.username;
-}
-
-
-// DECONNEXION
-async function deconnexion() {
-
-    try {
-
-        await fetch("/api/deconnexion", {
-            method: "POST"
-        });
-
-    } catch (erreur) {
-        console.log(erreur);
-    }
-
+function deconnexion() {
     utilisateur = null;
-
     page("accueil");
-}
-
-
-// SUPPRIMER SON COMPTE
-async function supprimerCompte() {
-
-    if (!confirm("Supprimer ton compte ?")) {
-        return;
-    }
-
-    try {
-
-        let reponse = await fetch("/api/supprimer", {
-            method: "DELETE"
-        });
-
-        let resultat = await reponse.json();
-
-        alert(resultat.message);
-
-        if (reponse.ok) {
-
-            utilisateur = null;
-
-            page("accueil");
-        }
-
-    } catch (erreur) {
-
-        alert("Impossible de contacter le serveur.");
-    }
-}
-
-
-// CHARGER LES UTILISATEURS ADMIN
-async function chargerUtilisateurs() {
-
-    try {
-
-        let reponse =
-            await fetch("/api/admin");
-
-        let resultat =
-            await reponse.json();
-
-        if (!reponse.ok) {
-
-            alert(resultat.message);
-
-            return;
-        }
-
-        let liste =
-            document.getElementById("listeUtilisateurs");
-
-        liste.innerHTML = "";
-
-        resultat.users.forEach(function(user) {
-
-            let ligne =
-                document.createElement("p");
-
-            ligne.textContent =
-                user.id +
-                " - " +
-                user.username +
-                " - " +
-                user.role;
-
-            let bouton =
-                document.createElement("button");
-
-            bouton.textContent =
-                "Supprimer";
-
-            bouton.onclick =
-                function() {
-                    supprimerUtilisateur(user.id);
-                };
-
-            ligne.appendChild(bouton);
-
-            liste.appendChild(ligne);
-
-        });
-
-    } catch (erreur) {
-
-        alert("Impossible de contacter le serveur.");
-    }
-}
-
-
-// SUPPRIMER UN UTILISATEUR
-async function supprimerUtilisateur(id) {
-
-    if (!confirm("Supprimer cet utilisateur ?")) {
-        return;
-    }
-
-    try {
-
-        let reponse =
-            await fetch("/api/admin/supprimer", {
-
-                method: "DELETE",
-
-                headers: {
-                    "Content-Type": "application/json"
-                },
-
-                body: JSON.stringify({
-                    id: id
-                })
-            });
-
-        let resultat =
-            await reponse.json();
-
-        alert(resultat.message);
-
-        if (reponse.ok) {
-            chargerUtilisateurs();
-        }
-
-    } catch (erreur) {
-
-        alert("Impossible de contacter le serveur.");
-    }
 }
