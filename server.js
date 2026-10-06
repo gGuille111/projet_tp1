@@ -103,3 +103,52 @@ if (req.body.username === undefined || req.body.password === undefined) {
 app.listen(2000, () => {
   console.log('Serveur lancé sur le port 2000');
 });
+
+
+app.delete("/delete-account", auth, (req, res) => {
+const username = req.user.username;
+
+db.query(
+"DELETE FROM utilisateurs WHERE username = ?",
+[username],
+(err) => {
+if (err) {
+return res.status(500).json({ message: "Erreur serveur" });
+}
+
+res.json({ message: "Compte supprimé" });
+}
+);
+});
+
+app.get("/users", auth, (req, res) => {
+if (!req.user.admin) {
+return res.status(403).json({ message: "Accès interdit" });
+}
+
+db.query("SELECT username FROM utilisateurs", (err, results) => {
+if (err) {
+return res.status(500).json({ message: "Erreur serveur" });
+}
+
+res.json(results);
+});
+});
+
+app.delete("/users/:username", auth, (req, res) => {
+if (!req.user.admin) {
+return res.status(403).json({ message: "Accès interdit" });
+}
+
+db.query(
+"DELETE FROM utilisateurs WHERE username = ?",
+[req.params.username],
+(err) => {
+if (err) {
+return res.status(500).json({ message: "Erreur serveur" });
+}
+
+res.json({ message: "Utilisateur supprimé" });
+}
+);
+});
