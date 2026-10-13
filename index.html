@@ -12,6 +12,7 @@
         <button style="background-color: #17775e;" color: white onclick="page('accueil')">Accueil</button>
         <button style="background-color: #17775e;" color: white onclick="page('connexion')">Connexion</button>
         <button style="background-color: #17775e;" color: white onclick="page('inscription')">Inscription</button>
+        <button style="background-color: #17775e; color: white;" onclick="page('accueil')">Accueil</button>
     </nav>
 
     <section id="accueil" class="page active">
@@ -19,7 +20,7 @@
         <p>Bienvenue sur notre projet</p>
     </section>
 
-    <section id="inscription" class="page">
+        <section id="inscription" class="page">
         <h2>Inscription</h2>
         <input
             id="nom"
@@ -31,6 +32,24 @@
             id="password"
             type="password"
             placeholder="Mot de passe"
+            style="background-color: #17775e;"
+        >
+        <input
+            id="nomFamille"
+            type="text"
+            placeholder="Nom"
+            style="background-color: #17775e;"
+        >
+        <input
+            id="prenom"
+            type="text"
+            placeholder="Prénom"
+            style="background-color: #17775e;"
+        >
+        <input
+            id="mail"
+            type="email"
+            placeholder="Adresse mail"
             style="background-color: #17775e;"
         >
         <button onclick="inscription()">
@@ -65,6 +84,7 @@
             Nom d'utilisateur :
             <span id="profilNom"></span>
         </p>
+        <a id="lienAdmin" href="admin.html" style="display:none">Administration</a>
         <button onclick="deconnexion()">
             Déconnexion
         </button>
