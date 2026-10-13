@@ -136,3 +136,26 @@ document.addEventListener("DOMContentLoaded", function() {
   );
  }
 });
+
+// Supprime le compte connecté après confirmation par mot de passe
+async function supprimerCompte() {
+ let password = prompt("Entre ton mot de passe pour supprimer ton compte :");
+ if (!password) return;
+
+ const reponse = await fetch("/delete-account", {
+  method: "DELETE",
+  headers: {
+   "Content-Type": "application/json",
+   Authorization: "Bearer " + localStorage.getItem("token")
+  },
+  body: JSON.stringify({ password: password })
+ });
+
+ const resultat = await reponse.json();
+ alert(resultat.message);
+
+ // Compte supprimé : on ferme la session
+ if (reponse.ok) {
+  deconnexion();
+ }
+}
